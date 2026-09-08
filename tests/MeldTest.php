@@ -7,6 +7,7 @@ use Garak\Rummy\Exception\InvalidMeldException;
 use Garak\Rummy\Meld;
 use Garak\Rummy\Run;
 use Garak\Rummy\Set;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -33,6 +34,50 @@ final class MeldTest extends TestCase
     {
         $this->expectException(InvalidMeldException::class);
         Meld::createFromString('Kh,Kd,Qs');
+    }
+
+    #[Test]
+    public function fromCardsInAnyOrderSortsARun(): void
+    {
+        self::assertSame('Td,Jd,Qd', (string) Meld::createFromString('Jd,Td,Qd', anyOrder: true));
+        self::assertSame('Td,wb,Qd', (string) Meld::createFromString('Qd,Td,wb', anyOrder: true));
+        self::assertSame('Ad,2d,wb', (string) Meld::createFromString('wb,Ad,2d', anyOrder: true));
+        self::assertInstanceOf(Run::class, Meld::createFromString('Jd,Td,Qd', anyOrder: true));
+    }
+
+    #[Test]
+    public function fromCardsInAnyOrderKeepsAValidMeldAsGiven(): void
+    {
+        self::assertSame('wb,Td,Jd', (string) Meld::createFromString('wb,Td,Jd', anyOrder: true));
+        self::assertSame('Ks,Kh,Kd', (string) Meld::createFromString('Ks,Kh,Kd', anyOrder: true));
+    }
+
+    #[Test]
+    #[DataProvider('anyOrderInvalidProvider')]
+    public function fromCardsInAnyOrderRefusesWhatIsNotARunEvenWhenSorted(string $cards, string $message): void
+    {
+        $this->expectException(InvalidMeldException::class);
+        $this->expectExceptionMessage($message);
+        Meld::createFromString($cards, anyOrder: true);
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public static function anyOrderInvalidProvider(): iterable
+    {
+        yield 'not consecutive' => ['Jd,Td,Ad', 'Cards in a run must be consecutive, got Jd,Td,Ad.'];
+        yield 'gap wider than the jokers' => ['Kd,Td,wb', 'Cards in a run must be consecutive, got Kd,Td,wb.'];
+        yield 'different suits' => ['Jd,Th,Qd', 'All cards in a run must share the suit, got Jd,Th,Qd.'];
+        yield 'duplicate' => ['Td,Jd,Td', 'Cards in a run must be consecutive, got Td,Jd,Td.'];
+        yield 'too short' => ['Jd,Td', 'A meld needs at least 3 cards, 2 given.'];
+        yield 'only jokers' => ['wb,wr,wb', 'A meld cannot be made of jokers only.'];
+        yield 'wrong set' => ['5s,5h,5s', 'Suits in a set must be different, got 5s,5h,5s.'];
+    }
+
+    #[Test]
+    public function fromCardsIsStrictByDefault(): void
+    {
+        $this->expectException(InvalidMeldException::class);
+        Meld::createFromString('Jd,Td,Qd');
     }
 
     #[Test]

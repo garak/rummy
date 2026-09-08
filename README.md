@@ -100,6 +100,17 @@ $run->getValues();       // [4, 5, 6]
 $run->getPoints();       // 15
 ```
 
+To spare players the exact order, pass `anyOrder: true` to the factories (`Table::createFromString()` too):
+a meld refused as given is tried again as a run with its cards sorted, jokers filling the gaps and the spare
+ones going after the last card (before the first one when the run already reaches the king). A meld valid
+as given is kept as it is. `Run::sort()` does the sorting alone, without validating anything.
+
+```php
+Meld::createFromString('Jd,Td,Qd', anyOrder: true);  // Td,Jd,Qd
+Meld::createFromString('Qd,Td,wb', anyOrder: true);  // Td,wb,Qd
+Meld::createFromString('wb,Td,Jd', anyOrder: true);  // kept: a valid run, 9 to J
+```
+
 ### Strings
 
 Cards are written as rank plus suit (`Kh`, `Tc`, `wb` for the black joker), optionally followed by the back

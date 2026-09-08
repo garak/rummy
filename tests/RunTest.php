@@ -38,6 +38,33 @@ final class RunTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('sortProvider')]
+    public function sort(string $cards, string $expected): void
+    {
+        self::assertSame($expected, \implode(',', \array_map(static fn (Card $card): string => $card->toString(true), Run::sort(self::cards($cards)))));
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public static function sortProvider(): iterable
+    {
+        yield 'in order' => ['Td,Jd,Qd', 'Td,Jd,Qd'];
+        yield 'scrambled' => ['Jd,Td,Qd', 'Td,Jd,Qd'];
+        yield 'descending' => ['Kd,Qd,Jd,Td', 'Td,Jd,Qd,Kd'];
+        yield 'ace first' => ['3d,Ad,2d', 'Ad,2d,3d'];
+        yield 'joker filling the gap' => ['Qd,Td,wb', 'Td,wb,Qd'];
+        yield 'two jokers filling a wider gap' => ['Kd,wr,Td,wb', 'Td,wr,wb,Kd'];
+        yield 'spare joker after the last card' => ['Jd,Td,wb', 'Td,Jd,wb'];
+        yield 'spare joker before the first card when at the king' => ['Kd,Qd,wb', 'wb,Qd,Kd'];
+        yield 'spare jokers before the first card keep their order' => ['Kd,Qd,wb,wr', 'wb,wr,Qd,Kd'];
+        yield 'spare jokers split around the run keep their order' => ['Qd,wbr,wrr,wbb', 'wrr,wbb,Qd,wbr'];
+        yield 'joker below the ace moved after the run' => ['wb,Ad,2d', 'Ad,2d,wb'];
+        yield 'joker above the king moved before the run' => ['Qd,Kd,wb', 'wb,Qd,Kd'];
+        yield 'gap wider than the jokers is left open' => ['Kd,Td,wb', 'Td,wb,Kd'];
+        yield 'only jokers are left alone' => ['wb,wr', 'wb,wr'];
+        yield 'backs are kept' => ['Jdr,Tdb,Qdr', 'Tdb,Jdr,Qdr'];
+    }
+
+    #[Test]
     #[DataProvider('invalidProvider')]
     public function invalidRuns(string $cards): void
     {

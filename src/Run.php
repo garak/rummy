@@ -2,6 +2,7 @@
 
 namespace Garak\Rummy;
 
+use Garak\Card\Card;
 use Garak\Card\Suit;
 use Garak\Rummy\Exception\InvalidMeldException;
 
@@ -45,6 +46,47 @@ final class Run extends Meld
     public function getPoints(): int
     {
         return \array_sum($this->values);
+    }
+
+    /**
+     * The given cards in run order: the regular ones ascending, jokers filling the gaps between them,
+     * the spare ones after the last card, or before the first one when the run already reaches the king.
+     * Nothing is validated: the result is a valid run only when the cards can make one.
+     *
+     * @param array<int|string, Card> $cards
+     *
+     * @return list<Card>
+     */
+    public static function sort(array $cards): array
+    {
+        $jokers = \array_values(\array_filter($cards, static fn (Card $card): bool => CardValue::isJoker($card)));
+        $regular = \array_values(\array_filter($cards, static fn (Card $card): bool => !CardValue::isJoker($card)));
+        if ([] === $regular) {
+            return \array_values($cards);
+        }
+        \usort($regular, static fn (Card $card1, Card $card2): int => CardValue::of($card1) <=> CardValue::of($card2));
+        $run = [];
+        $last = null;
+        foreach ($regular as $card) {
+            $value = CardValue::of($card);
+            while (null !== $last && $last + 1 < $value && [] !== $jokers) {
+                $run[] = \array_shift($jokers);
+                ++$last;
+            }
+            $run[] = $card;
+            $last = $value;
+        }
+        $before = [];
+        foreach ($jokers as $joker) {
+            if ($last < CardValue::MAX) {
+                $run[] = $joker;
+                ++$last;
+            } else {
+                $before[] = $joker;
+            }
+        }
+
+        return \array_merge($before, $run);
     }
 
     /**
