@@ -31,6 +31,12 @@ final class TableTest extends TestCase
     }
 
     #[Test]
+    public function runsInAnyOrder(): void
+    {
+        self::assertSame('Kh,Kd,Ks;Ah,2h,3h', (string) Table::createFromString('Kh,Kd,Ks;3h,Ah,2h', anyOrder: true));
+    }
+
+    #[Test]
     public function isPreservedIn(): void
     {
         $table = Table::createFromString('Kh,Kd,Ks;Ah,2h,3h');
