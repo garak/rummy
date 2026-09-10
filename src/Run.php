@@ -59,12 +59,12 @@ final class Run extends Meld
      */
     public static function sort(array $cards): array
     {
-        $jokers = \array_values(\array_filter($cards, static fn (Card $card): bool => CardValue::isJoker($card)));
-        $regular = \array_values(\array_filter($cards, static fn (Card $card): bool => !CardValue::isJoker($card)));
+        $jokers = \array_values(\array_filter($cards, static fn (Card $c): bool => CardValue::isJoker($c)));
+        $regular = \array_values(\array_filter($cards, static fn (Card $c): bool => !CardValue::isJoker($c)));
         if ([] === $regular) {
             return \array_values($cards);
         }
-        \usort($regular, static fn (Card $card1, Card $card2): int => CardValue::of($card1) <=> CardValue::of($card2));
+        \usort($regular, static fn (Card $c1, Card $c2): int => CardValue::of($c1) <=> CardValue::of($c2));
         $run = [];
         $last = null;
         foreach ($regular as $card) {

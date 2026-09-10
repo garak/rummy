@@ -2,6 +2,9 @@
 
 namespace Garak\Rummy;
 
+/**
+ * @template T of Player = self
+ */
 abstract class Player implements \Stringable
 {
     public function __construct(protected string $name)
@@ -23,5 +26,8 @@ abstract class Player implements \Stringable
         return $game->hasPlayer($this);
     }
 
+    /**
+     * @param T $player
+     */
     abstract public function isEqual(self $player): bool;
 }

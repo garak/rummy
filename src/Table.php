@@ -28,7 +28,7 @@ final readonly class Table implements \Countable, \Stringable
             return new self();
         }
 
-        return new self(\array_map(static fn (string $meld): Meld => Meld::createFromString($meld, $anyOrder), \explode(';', $melds)));
+        return new self(\array_map(static fn (string $m): Meld => Meld::createFromString($m, $anyOrder), \explode(';', $melds)));
     }
 
     public function __toString(): string
@@ -38,7 +38,7 @@ final readonly class Table implements \Countable, \Stringable
 
     public function toString(bool $withBack = false): string
     {
-        return \implode(';', \array_map(static fn (Meld $meld): string => $meld->toString($withBack), $this->melds));
+        return \implode(';', \array_map(static fn (Meld $m): string => $m->toString($withBack), $this->melds));
     }
 
     /** @return list<Meld> */
@@ -50,7 +50,7 @@ final readonly class Table implements \Countable, \Stringable
     /** @return list<Card> */
     public function getCards(): array
     {
-        return \array_merge(...\array_map(static fn (Meld $meld): array => $meld->getCards(), $this->melds));
+        return \array_merge(...\array_map(static fn (Meld $m): array => $m->getCards(), $this->melds));
     }
 
     public function isEmpty(): bool
@@ -70,7 +70,7 @@ final readonly class Table implements \Countable, \Stringable
     {
         $remaining = $table->melds;
         foreach ($this->melds as $meld) {
-            $index = \array_find_key($remaining, static fn (Meld $candidate): bool => $meld->hasSameCards($candidate));
+            $index = \array_find_key($remaining, static fn (Meld $c): bool => $meld->hasSameCards($c));
             if (null === $index) {
                 return false;
             }
@@ -90,7 +90,7 @@ final readonly class Table implements \Countable, \Stringable
         $remaining = $this->melds;
         $new = [];
         foreach ($table->melds as $meld) {
-            $index = \array_find_key($remaining, static fn (Meld $candidate): bool => $meld->hasSameCards($candidate));
+            $index = \array_find_key($remaining, static fn (Meld $c): bool => $meld->hasSameCards($c));
             if (null === $index) {
                 $new[] = $meld;
                 continue;

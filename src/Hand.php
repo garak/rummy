@@ -2,6 +2,7 @@
 
 namespace Garak\Rummy;
 
+use Garak\Card\Card;
 use Garak\Card\Hand as BaseHand;
 
 final class Hand extends BaseHand
@@ -22,6 +23,6 @@ final class Hand extends BaseHand
      */
     public function getPenalty(int $jokerPenalty = 30): int
     {
-        return \array_sum(\array_map(static fn ($card): int => CardValue::penalty($card, $jokerPenalty), $this->cards));
+        return \array_sum(\array_map(static fn (Card $c): int => CardValue::penalty($c, $jokerPenalty), $this->cards));
     }
 }

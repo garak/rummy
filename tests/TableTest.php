@@ -56,7 +56,7 @@ final class TableTest extends TestCase
     }
 
     #[Test]
-    public function meldsAreReindexed(): void
+    public function meldsAreReIndexed(): void
     {
         $table = new Table(['a' => Meld::createFromString('Kh,Kd,Ks')]);
         self::assertSame([0], \array_keys($table->getMelds()));

@@ -1,7 +1,11 @@
 # PHP Rummy library
 
+[![Latest Stable Version](http://poser.pugx.org/garak/rummy/v)](https://packagist.org/packages/garak/rummy)
+[![Latest Unstable Version](http://poser.pugx.org/garak/rummy/v/unstable)](https://packagist.org/packages/garak/rummy)
 [![License](http://poser.pugx.org/garak/rummy/license)](https://packagist.org/packages/garak/rummy)
 [![PHP Version Require](http://poser.pugx.org/garak/rummy/require/php)](https://packagist.org/packages/garak/rummy)
+[![Maintainability](https://qlty.sh/gh/garak/projects/rummy/maintainability.svg)](https://qlty.sh/gh/garak/projects/rummy)
+[![Code Coverage](https://qlty.sh/gh/garak/projects/rummy/coverage.svg)](https://qlty.sh/gh/garak/projects/rummy)
 
 <img src="docs/rummy.svg" alt="A rummy table: a run of hearts, three kings, a run with a joker, and a rack holding a hand of cards" width="720">
 
@@ -15,6 +19,8 @@ This library offers PHP classes for building a manipulation rummy game: two deck
 * `Hand` — the cards held by a player
 * `Meld`, `Set`, `Run` — valid combinations laid on the table
 * `Table` — the melds currently on the table
+
+Want to see it in action? Go to [rummy.garak.it](https://rummy.garak.it/) and play it yourself!
 
 ### Rules
 
