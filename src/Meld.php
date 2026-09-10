@@ -75,8 +75,8 @@ abstract class Meld implements \Countable, \Stringable
      */
     private static function guess(array $cards): self
     {
-        $regular = \array_filter($cards, static fn (Card $card): bool => !CardValue::isJoker($card));
-        $ranks = \array_unique(\array_map(static fn (Card $card): string => $card->getRank()->value, $regular));
+        $regular = \array_filter($cards, static fn (Card $c): bool => !CardValue::isJoker($c));
+        $ranks = \array_unique(\array_map(static fn (Card $c): string => $c->getRank()->value, $regular));
         if (1 === \count($ranks) && \count($cards) <= Rules::MAX_SET_LENGTH) {
             return new Set($cards);
         }
@@ -101,7 +101,7 @@ abstract class Meld implements \Countable, \Stringable
 
     public function toString(bool $withBack = false): string
     {
-        return \implode(',', \array_map(static fn (Card $card): string => $card->toString($withBack), $this->cards));
+        return \implode(',', \array_map(static fn (Card $c): string => $c->toString($withBack), $this->cards));
     }
 
     /** @return list<Card> */
@@ -113,7 +113,7 @@ abstract class Meld implements \Countable, \Stringable
     /** @return list<Card> */
     public function getRegularCards(): array
     {
-        return \array_values(\array_filter($this->cards, static fn (Card $card): bool => !CardValue::isJoker($card)));
+        return \array_values(\array_filter($this->cards, static fn (Card $c): bool => !CardValue::isJoker($c)));
     }
 
     public function hasJoker(): bool

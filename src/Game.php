@@ -187,7 +187,7 @@ class Game
             if (!$this->table->isPreservedIn($layout)) {
                 throw new IllegalMoveException('The table cannot be rearranged before opening.');
             }
-            $points = \array_sum(\array_map(static fn (Meld $meld): int => $meld->getPoints(), $this->table->newMeldsIn($layout)));
+            $points = \array_sum(\array_map(static fn (Meld $m): int => $m->getPoints(), $this->table->newMeldsIn($layout)));
             if ($points < $this->rules->openingPoints) {
                 throw new IllegalMoveException(\sprintf('Opening melds are worth %d points, %d needed.', $points, $this->rules->openingPoints));
             }
@@ -270,7 +270,7 @@ class Game
         if (null === $winner) {
             // stalemate: lowest hand wins, everyone's total is reduced by the winner's own penalty
             $winner = (int) \array_search(\min($penalties), $penalties, true);
-            $penalties = \array_map(static fn (int $penalty): int => $penalty - $penalties[$winner], $penalties);
+            $penalties = \array_map(static fn (int $p): int => $p - $penalties[$winner], $penalties);
         }
         foreach ($penalties as $index => $penalty) {
             $this->scores[$index] = $index === $winner ? \array_sum($penalties) : -$penalty;
